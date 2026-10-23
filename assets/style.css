@@ -30,8 +30,8 @@
   --r-sm: 12px;
   --wrap: 1180px;
   --gutter: clamp(16px, 4vw, 40px);
-  --display: 'Cormorant', 'Cormorant Garamond', Georgia, serif;
-  --sans: 'Manrope', 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --display: 'Gilroy', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --sans: 'Gilroy', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color-scheme: light;
 }
 
@@ -612,3 +612,29 @@ p { margin: 0; }
   .rv { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   ШРИФТ — Gilroy (свои файлы в assets/fonts, без Google Fonts)
+   Атрибут data-font="gilroy" на <html> включает подстройку заголовков ниже.
+   ══════════════════════════════════════════════════════════════════════ */
+@font-face { font-family: 'Gilroy'; src: url(fonts/gilroy-300.woff2) format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'Gilroy'; src: url(fonts/gilroy-400.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Gilroy'; src: url(fonts/gilroy-500.woff2) format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Gilroy'; src: url(fonts/gilroy-600.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Gilroy'; src: url(fonts/gilroy-700.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Gilroy'; src: url(fonts/gilroy-800.woff2) format('woff2'); font-weight: 800; font-display: swap; }
+
+/* Кегли заголовков в макете подобраны под шкалу с глазком ~0,40 кегля, у Gilroy он 0,50 —
+   font-size-adjust выравнивает визуальный размер, не переписывая каждый кегль.
+   :where() держит вес правила ниже точечных правок, html:root — выше базовых правил */
+html:root[data-font="gilroy"] :where(.logo-text b, .hero h1, .sec h2, .sub-h, .fact b, .price, .tariff .dayname th, .promo h3, .loyal-strip-pct, .pass b, .loyal-hero h3, .ladder .pct, .sauna h3, .slot time, .pool h3, .result .sum, .pkg h3, .acc summary h3, .venue b, .bfast .card h4, .offer h3, .kid-item h3, .show-card h3, .prog h3, .home h3, .addr, .map-card h3, .doc-g h3, .gift h3, .foot .tel) {
+  font-size-adjust: .4; font-weight: 700; letter-spacing: -.02em;
+}
+/* главные заголовки — плотнее и жирнее; курсивный акцент → светлое начертание */
+:root[data-font="gilroy"] :is(.hero h1, .sec h2, .loyal-hero h3) { font-weight: 800; letter-spacing: -.035em; line-height: .95; }
+:root[data-font="gilroy"] :is(.sec h2, .loyal-hero h3) { font-size-adjust: .47; }
+:root[data-font="gilroy"] :is(.hero h1 em, .sec h2 em, .loyal-hero h3 em) { font-style: normal; font-weight: 300; letter-spacing: -.03em; }
+:root[data-font="gilroy"] :is(.price, .ladder .pct, .result .sum, .fact b, .slot time, .loyal-strip-pct) { font-weight: 600; font-size-adjust: .44; }
+:root[data-font="gilroy"] .logo-text b { font-weight: 700; letter-spacing: 0; }
+:root[data-font="gilroy"] .eyebrow { letter-spacing: .18em; }
