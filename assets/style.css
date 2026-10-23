@@ -277,11 +277,13 @@ p { margin: 0; }
 .tariff th, .tariff td { padding: 14px 12px; text-align: right; border-bottom: 1px solid var(--line-2); white-space: nowrap; }
 .tariff th:first-child, .tariff td:first-child { text-align: left; }
 .tariff thead th { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
-.tariff tbody th { font-weight: 600; }
-.tariff tbody th small { display: block; font-weight: 400; color: var(--ink-3); font-size: 13px; }
 .tariff td { font-size: 17px; font-weight: 600; }
-.tariff tr.today th::before { content: 'сегодня'; display: inline-block; margin-right: 8px; padding: 2px 8px; border-radius: 999px; background: var(--coral); color: var(--coral-ink); font-size: 11px; font-weight: 700; vertical-align: 2px; }
-.tariff .grp th { border-bottom: 0; padding-bottom: 0; }
+.tariff .dayname th { padding: 22px 12px 6px; border-bottom: 0; font: 600 21px/1.2 var(--display); }
+.tariff tbody:first-of-type .dayname th { padding-top: 12px; }
+.tariff .dayname small { font: 400 13px var(--sans); color: var(--ink-3); margin-left: 6px; }
+.tariff .cat { font-weight: 500; color: var(--ink-2); font-size: 15px; }
+.tariff tbody.today .dayname th::after { content: 'сегодня'; display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 999px; background: var(--coral); color: var(--coral-ink); font: 700 11px var(--sans); vertical-align: 3px; }
+.tariff tbody.today td { color: var(--brand-ink); }
 .kv { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
 .kv:last-child { border-bottom: 0; }
 .kv b { white-space: nowrap; }
@@ -293,6 +295,43 @@ p { margin: 0; }
 .promo .when { font-size: 13px; font-weight: 600; color: var(--aqua); }
 .promo p { font-size: 14px; color: var(--ink-2); }
 .promo .price { font-size: 26px; }
+
+/* полоса-ссылка на карту лояльности (в «Акциях») */
+.loyal-strip { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding: 14px 18px; border-radius: var(--r);
+  text-decoration: none; color: var(--on-deep); background: linear-gradient(100deg, var(--brand), #0d3566); box-shadow: var(--shadow); }
+.loyal-strip:hover { filter: brightness(1.08); }
+.loyal-strip-pct { flex: none; font: 500 28px/1 var(--display); color: #fff; }
+.loyal-strip b { color: #fff; }
+.loyal-strip span:nth-child(2) { flex: 1; font-size: 15px; color: var(--on-deep-2); }
+.loyal-strip-go { flex: none; font-weight: 600; color: var(--sky); white-space: nowrap; }
+
+/* абонементы */
+.passes { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 14px; margin-top: 22px; align-items: stretch; }
+.passes-head { align-self: center; }
+.passes-head .sub-h { margin: 0 0 6px; font-size: 26px; }
+.pass b { display: block; font: 600 20px/1.2 var(--display); margin-bottom: 4px; }
+
+/* программа лояльности */
+.loyal-hero { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; }
+.loyal-hero h3 { font: 500 clamp(32px, 4vw, 46px)/1.05 var(--display); margin: 12px 0 8px; }
+.loyal-hero h3 em { font-style: italic; font-weight: 400; color: var(--brand-ink); }
+.loyal-hero .btn svg { width: 18px; height: 18px; }
+.ladder { list-style: none; padding: 0; margin: 28px 0 22px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: end; }
+.ladder li { display: flex; flex-direction: column; gap: 4px; }
+.ladder .pct { font: 500 clamp(30px, 3.6vw, 44px)/1 var(--display); color: var(--brand-ink); font-variant-numeric: tabular-nums; }
+.ladder .v { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.ladder i { display: block; margin-top: 8px; height: calc(26px + var(--i) * 30px); border-radius: 14px 14px 6px 6px;
+  background: linear-gradient(180deg, var(--sky), var(--brand)); opacity: calc(.45 + var(--i) * .18); }
+.loyal-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 14px; }
+.loyal-grid .sub-h { font-size: 22px; margin-bottom: 12px; }
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; padding: 10px 0; }
+.step + .step { border-top: 1px dashed var(--line); }
+.step .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--hl); color: var(--brand-ink); font-weight: 700; }
+.step p { font-size: 14px; color: var(--ink-2); margin-top: 2px; }
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ticks li { display: grid; grid-template-columns: 18px 1fr; gap: 10px; font-size: 14px; color: var(--ink-2); }
+.ticks li::before { content: ''; width: 18px; height: 18px; margin-top: 1px; border-radius: 50%; background: var(--hl) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322a6c1' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 11px no-repeat; }
+.loyal-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 18px; }
 
 /* бани */
 .saunas { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
@@ -355,6 +394,7 @@ p { margin: 0; }
 .result .applied div { font-size: 14px; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.08); }
 .result .applied div.best { background: rgba(239,159,82,.18); color: #ffd5ad; }
 .result .old { text-decoration: line-through; opacity: .55; margin-left: 8px; font-size: 16px; }
+.result .applied .fine { background: none; padding: 4px 0 0; font-size: 12px; color: var(--on-deep-2); }
 
 /* СПА */
 .pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
@@ -434,6 +474,9 @@ p { margin: 0; }
 .prog li { display: flex; gap: 10px; font-size: 14px; color: var(--ink-2); }
 .prog li::before { content: ''; flex: none; width: 6px; height: 6px; margin-top: 8px; border-radius: 50%; background: var(--aqua); }
 .prog-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.anim-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.stay-promos { margin-top: 30px; }
+.stay-promos .promo h3 { font-size: 20px; }
 .groups { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 14px; }
 
 /* Проживание */
@@ -512,6 +555,9 @@ p { margin: 0; }
   .nav a { padding: 8px 9px; font-size: 13.5px; }
   .docs { grid-template-columns: repeat(2, 1fr); }
   .incl { grid-template-columns: repeat(2, 1fr); }
+  .anim-row { grid-template-columns: repeat(2, 1fr); }
+  .passes { grid-template-columns: 1fr 1fr; }
+  .passes-head { grid-column: 1 / -1; }
 }
 @media (max-width: 920px) {
   html { scroll-padding-top: 122px; }
@@ -532,22 +578,29 @@ p { margin: 0; }
   .mosaic.m2, .mosaic.m3 { grid-template-columns: 1fr 1fr; grid-template-rows: 220px 160px; }
   .mosaic.m2 figure:first-child, .mosaic.m3 figure:first-child { grid-column: span 2; }
   .menu { grid-template-columns: 1fr; }
+  .loyal-grid { grid-template-columns: 1fr; }
   .offer { grid-template-columns: 1fr; }
   .foot-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 620px) {
-  .g2, .g4, .bfast, .docs, .contact-grid, .incl { grid-template-columns: 1fr; }
+  .g2, .g4, .bfast, .docs, .contact-grid, .incl, .anim-row, .passes { grid-template-columns: 1fr; }
+  .ladder { gap: 8px; }
+  .ladder .v { font-size: 11px; }
+  .loyal-strip { flex-wrap: wrap; gap: 6px 12px; }
+  .loyal-strip span:nth-child(2) { flex-basis: 100%; order: 3; }
   .calc form { grid-template-columns: 1fr; }
   .hero-cta .btn { flex: 1 1 100%; }
   .tabs { border-radius: 16px; }
   .tariff thead { display: none; }
-  .tariff tr { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 18px; padding: 14px 0; border-bottom: 1px solid var(--line-2); }
-  .tariff tbody th, .tariff td { border: 0; padding: 0; }
-  .tariff tbody th { grid-column: 1 / -1; margin-bottom: 8px; display: flex; align-items: baseline; gap: 8px; }
-  .tariff tbody th small { display: inline; }
-  .tariff td { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 5px 0; font-size: 16px; text-align: left; }
-  .tariff td::before { content: attr(data-l); font-size: 12px; font-weight: 500; color: var(--ink-3); }
-  .tariff tr.today th::before { order: 3; margin: 0 0 0 auto; }
+  .tariff tbody.day { display: block; padding-bottom: 10px; border-bottom: 1px solid var(--line-2); }
+  .tariff tbody.day:last-child { border-bottom: 0; }
+  .tariff tr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 10px; }
+  .tariff tr.dayname { display: block; }
+  .tariff .dayname th { display: block; padding: 14px 0 4px; }
+  .tariff tbody:first-of-type .dayname th { padding-top: 2px; }
+  .tariff th.cat { grid-column: 1 / -1; padding: 8px 0 2px; border: 0; font-size: 13px; }
+  .tariff td { display: flex; flex-direction: column; gap: 1px; padding: 0 0 6px; border: 0; text-align: left; font-size: 16px; }
+  .tariff td::before { content: attr(data-l); font-size: 11px; font-weight: 500; color: var(--ink-3); }
   .foot-grid { grid-template-columns: 1fr; }
   .home dl { grid-template-columns: repeat(3, 1fr); gap: 4px 10px; }
   .svc { flex-direction: column; align-items: stretch; gap: 6px; }

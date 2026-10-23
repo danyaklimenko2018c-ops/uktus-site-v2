@@ -10,6 +10,7 @@
   const set = (sel, html) => { const el = $(sel); if (el) el.innerHTML = html; };
 
   const I = {
+    tg: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.6 19.8c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.9 13.3l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.4 2.8c.9-.3 1.7.2 1.5 1.5z"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
     doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
     kids: ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2"/></svg>',
@@ -76,14 +77,16 @@
     set('#termy-facts', T.facts.map(f => `<div class="fact"><b>${esc(f.n)}</b><span>${esc(f.t)}</span></div>`).join(''));
 
     const today = ekb().dow, todayIdx = today === 6 ? 1 : today === 0 ? 2 : 0;
+    const cols = ['2 часа', '3 часа', 'Безлимит'];
     set('#tariff-table', `
-      <thead><tr><th>День</th><th>Общий · 2 ч</th><th>Общий · 3 ч</th><th>Льготный · 2 ч</th><th>Льготный · 3 ч</th></tr></thead>
-      <tbody>${T.tariffs.map((r, i) => `
-        <tr${i === todayIdx ? ' class="today"' : ''}>
-          <th>${esc(r.day)}${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</th>
-          <td data-l="Общий · 2 ч">${rub(r.general[0])}</td><td data-l="Общий · 3 ч">${rub(r.general[1])}</td><td data-l="Льготный · 2 ч">${rub(r.lgot[0])}</td><td data-l="Льготный · 3 ч">${rub(r.lgot[1])}</td>
-        </tr>`).join('')}</tbody>`);
-    set('#lgot-who', `<b>Льготный тариф:</b> ${esc(T.lgotWho)}.`);
+      <thead><tr><th></th>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead>
+      ${T.tariffs.map((r, i) => `
+      <tbody class="day${i === todayIdx ? ' today' : ''}">
+        <tr class="dayname"><th colspan="4">${esc(r.day)}${r.sub ? ` <small>${esc(r.sub)}</small>` : ''}</th></tr>
+        <tr><th class="cat">Общий</th>${r.general.map((x, j) => `<td data-l="${cols[j]}">${rub(x)}</td>`).join('')}</tr>
+        <tr><th class="cat">Льготный</th>${r.lgot.map((x, j) => `<td data-l="${cols[j]}">${rub(x)}</td>`).join('')}</tr>
+      </tbody>`).join('')}`);
+    set('#lgot-who', `<b>Льготный тариф:</b> ${esc(T.lgotWho)}. ${esc(T.kidsFree)}`);
     set('#termy-included', esc(T.included));
     set('#termy-rent', T.rent.map(r => `<div class="kv"><span>${esc(r.n)}</span><b>${esc(r.p)}</b></div>`).join(''));
     set('#termy-bring', `<b>Что взять с собой:</b> ${esc(T.bring)}`);
@@ -95,6 +98,40 @@
         <div class="when">${esc(p.when)}</div>
         <p>${esc(p.text)}</p>
       </article>`).join(''));
+
+    set('#passes', `
+      <div class="passes-head"><h3 class="sub-h">Абонементы</h3><p class="muted small">${esc(T.passesNote)}</p></div>
+      ${T.passes.map(x => `<div class="pass card"><b>${esc(x.name)}</b>
+        <div class="kv"><span>Взрослый</span><b>${rub(x.adult)}</b></div>
+        <div class="kv"><span>Детский, 4–12 лет</span><b>${rub(x.kid)}</b></div></div>`).join('')}`);
+
+    const L = T.loyalty;
+    const rules = (D.docs.flatMap(g => g.d).find(x => /лояльност/i.test(x.t)) || {}).u;
+    set('#loyal', `
+      <div class="loyal-hero">
+        <div>
+          <span class="tag">Программа лояльности Baden Uktus</span>
+          <h3>Скидка растёт <em>с каждым визитом</em></h3>
+          <p class="muted">${esc(L.reset)}. Вступить можно бесплатно.</p>
+        </div>
+        <a class="btn btn-warm" href="${esc(L.bot)}" target="_blank" rel="noopener">${I.tg}Вступить в ${esc(L.botName)}</a>
+      </div>
+      <ol class="ladder" aria-label="Скидка по номеру визита в месяце">
+        ${L.tiers.map((t, i) => `<li style="--i:${i}"><span class="pct">−${t.pct}%</span><span class="v">${esc(t.visit)}</span><i aria-hidden="true"></i></li>`).join('')}
+      </ol>
+      <div class="loyal-grid">
+        <div class="card"><h4 class="sub-h">Как вступить</h4>
+          ${L.join.map((j, i) => `<div class="step"><span class="n">${i + 1}</span><div><b>${esc(j.how)}</b><p>${esc(j.text)}</p></div></div>`).join('')}
+        </div>
+        <div class="card"><h4 class="sub-h">Важно знать</h4>
+          <ul class="ticks">${L.rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
+          <p class="note">${esc(L.survey)}</p>
+        </div>
+      </div>
+      <div class="loyal-foot">
+        <a href="#termy" data-open-tab="tb-calc" class="btn btn-line btn-sm">Посчитать билет со скидкой</a>
+        ${rules ? `<a href="${esc(rules)}" target="_blank" rel="noopener" class="small">Полные правила программы (PDF) →</a>` : ''}
+      </div>`);
 
     set('#sauna-grid', T.saunas.map(s => `
       <article class="card sauna">
@@ -150,34 +187,40 @@
   function calc() {
     const f = $('#calc'); if (!f) return;
     const v = {
-      day: f.day.value, time: f.time.value, hours: +f.hours.value, cat: f.cat.value,
-      adults: +f.adults.value, kids: +f.kids.value, bday: f.bday.checked, student: f.student.checked,
+      day: f.day.value, time: f.time.value, hours: f.hours.value, cat: f.cat.value,
+      adults: +f.adults.value, kids: +f.kids.value, bday: f.bday.checked, student: f.student.checked, loyal: +f.loyal.value,
     };
     const T = D.termy.tariffs, row = v.day === 'saturday' ? T[1] : v.day === 'sunday' ? T[2] : T[0];
-    const idx = v.hours === 2 ? 0 : 1;
+    const idx = { 2: 0, 3: 1, u: 2 }[v.hours], unlim = v.hours === 'u';
     const aP = row[v.cat][idx], kP = row.lgot[idx];
     const weekday = v.day === 'weekday' || v.day === 'wednesday';
     const people = v.adults + v.kids;
     const base = v.adults * aP + v.kids * kP;
 
-    const opts = [{ name: 'Без акций', sum: base, info: `${v.adults} взр. × ${rub(aP)}` + (v.kids ? ` + ${v.kids} дет. × ${rub(kP)}` : '') }];
+    const opts = [{ name: 'Без скидок', sum: base, info: `${v.adults} взр. × ${rub(aP)}` + (v.kids ? ` + ${v.kids} дет. × ${rub(kP)}` : '') }];
     if (people) {
-      if (weekday && v.time === 'late') opts.push({ name: '«Ещё не поздно»', sum: people * 900, info: `${people} × 900 ₽, вход после 20:45` });
-      if (weekday && v.time === 'morning') opts.push({ name: '«Ранняя пташка»', sum: people * 1300, info: `${people} × 1 300 ₽, пребывание до 12:00` });
-      if (v.adults >= 2 && v.hours === 3 && v.cat === 'general' && v.kids > 0)
+      if (weekday && v.time === 'late')
+        opts.push({ name: '«Ещё не поздно»', sum: people * 1500, info: `${people} × 1 500 ₽, с 20:45 до закрытия` });
+      if (v.adults >= 2 && v.hours === '3' && v.cat === 'general' && v.kids > 0)
         opts.push({ name: '«Семья»', sum: base - kP, info: 'один ребёнок до 12 лет — бесплатно' });
       if (weekday && ['morning', 'day'].includes(v.time) && v.adults === 1 && v.kids === 1)
-        opts.push({ name: '«Мать и дитя» −20%', sum: Math.round(base * .8), info: 'будни до 17:00' });
-      if (v.bday) opts.push({ name: '«Именинник» −10%', sum: Math.round(base * .9), info: 'нужен документ с датой рождения' });
+        opts.push({ name: '«Мать и дитя» −20%', sum: Math.round((row.general[idx] + kP) * .8), info: 'будни 9:00–17:00, взрослый по общему прайсу' });
+      if (v.bday && !unlim)
+        opts.push({ name: '«Именинник» −10%', sum: Math.round(base * .9), info: 'кроме безлимита, по документу' });
       if (v.student && v.day === 'wednesday' && ['morning', 'day'].includes(v.time))
         opts.push({ name: '«Студенческая среда» −20%', sum: Math.round(base * .8), info: 'до 19:00, по студенческому' });
+      if (v.loyal && v.adults > 0) {
+        const off = Math.round((aP + (v.kids ? kP : 0)) * v.loyal / 100);
+        opts.push({ name: `Карта лояльности −${v.loyal}%`, sum: base - off, info: v.kids ? 'на билет участника и одного ребёнка' : 'на билет участника программы' });
+      }
     }
     const best = opts.reduce((a, b) => (b.sum < a.sum ? b : a));
     $('#calc-sum').innerHTML = people ? rub(best.sum) + (best.sum < base ? `<span class="old">${rub(base)}</span>` : '') : '—';
     $('#calc-line').textContent = people ? (best === opts[0] ? opts[0].info : best.info) : 'Добавьте гостей';
-    $('#calc-applied').innerHTML = opts.length > 1
+    $('#calc-applied').innerHTML = (opts.length > 1
       ? opts.slice(1).sort((a, b) => a.sum - b.sum).map(o => `<div class="${o === best ? 'best' : ''}">${o === best ? '✓ ' : ''}${esc(o.name)} — ${rub(o.sum)}</div>`).join('')
-      : '<div>Для этих условий акций нет. Дети до 4 лет — бесплатно.</div>';
+      : '<div>Для этих условий акций нет.</div>')
+      + '<div class="fine">Скидки не суммируются — выбран самый выгодный вариант. В праздничные дни акции не действуют. Дети до 4 лет — бесплатно.</div>';
   }
   function initCalc() {
     const f = $('#calc'); if (!f) return;
@@ -291,6 +334,12 @@
               <dd>${esc(t.guests)}</dd><dd>${esc(t.checkin)}</dd><dd>${esc(t.checkout)}</dd></dl>
         </div>
       </article>`).join(''));
+    set('#stay-promos', `
+      <h3 class="sub-h">Акции на проживание</h3>
+      <div class="grid g4">${S.promos.map(x => `
+        <article class="card promo"><div class="promo-top"><h3>${esc(x.name)}</h3><span class="price">${esc(x.pct)}</span></div>
+          <p>${esc(x.text)}</p></article>`).join('')}</div>
+      <p class="note">Акции не суммируются, не действуют в праздничные дни и не распространяются на дополнительные места.</p>`);
     set('#extra-bed', S.extraBed.map(r => `<div class="kv"><span>${esc(r.n)}</span><b>${esc(r.p)}</b></div>`).join(''));
     set('#extra-note', esc(S.extraBedNote));
     set('#stay-deposit', esc(S.deposit));
@@ -346,7 +395,7 @@
 
     set('#faq', D.faq.map(f => `
       <details><summary><p>${esc(f.q)}</p><span class="pm" aria-hidden="true"></span></summary>
-        <div class="rows"><p>${esc(f.a)}</p><a href="#${esc(f.to)}"${f.to === 'termy' ? ' data-open-tab="' + (f.tl === 'Бассейны' ? 'tb-pools' : 'tb-price') + '"' : ''}>${esc(f.tl)} →</a></div></details>`).join(''));
+        <div class="rows"><p>${esc(f.a)}</p><a href="#${esc(f.to)}"${f.to === 'termy' ? ' data-open-tab="' + ({ 'Бассейны': 'tb-pools', 'Карта лояльности': 'tb-loyal' }[f.tl] || 'tb-price') + '"' : ''}>${esc(f.tl)} →</a></div></details>`).join(''));
 
     const G = D.gift;
     set('#gift', `<div><h3>Подарочные сертификаты</h3><p class="muted small">${esc(G.text)} ${esc(G.online)}.</p></div>

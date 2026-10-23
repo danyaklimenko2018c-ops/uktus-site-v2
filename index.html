@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/hero.jpg">
-<link rel="stylesheet" href="assets/style.css?v=1023d">
+<link rel="stylesheet" href="assets/style.css?v=1023e">
 <script>try{var t=localStorage.getItem('uktus-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
@@ -93,6 +93,7 @@
     <div class="tabs" role="tablist" aria-label="Термы" data-tabs="termy">
       <button class="tab" role="tab" aria-selected="true" aria-controls="t-price" id="tb-price">Тарифы</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="t-promo" id="tb-promo">Акции</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="t-loyal" id="tb-loyal">Карта лояльности</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="t-bath" id="tb-bath">Бани и ауфгуссы</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="t-pools" id="tb-pools">Бассейны</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="t-calc" id="tb-calc">Калькулятор</button>
@@ -121,8 +122,19 @@
 
     <!-- Акции -->
     <div class="panel" role="tabpanel" id="t-promo" aria-labelledby="tb-promo" hidden>
-      <div class="grid g4" id="promo-grid"></div>
-      <p class="note">Акции не суммируются. Выгодный вариант для вашей компании подберёт калькулятор.</p>
+      <a class="loyal-strip" href="#termy" data-open-tab="tb-loyal">
+        <span class="loyal-strip-pct">до −20%</span>
+        <span><b>Ходите часто?</b> По карте лояльности скидка на билет растёт с каждым визитом в месяце</span>
+        <span class="loyal-strip-go">Подробнее →</span>
+      </a>
+      <div class="grid g3" id="promo-grid"></div>
+      <div class="passes" id="passes"></div>
+      <p class="note">Акции не суммируются друг с другом и с картой лояльности, не действуют в праздничные дни. Выгодный вариант для вашей компании подберёт калькулятор.</p>
+    </div>
+
+    <!-- Карта лояльности -->
+    <div class="panel" role="tabpanel" id="t-loyal" aria-labelledby="tb-loyal" hidden>
+      <div class="loyal" id="loyal"></div>
     </div>
 
     <!-- Бани -->
@@ -169,9 +181,17 @@
             <div class="field"><span>Детей 4–12 лет</span>
               <div class="stepper"><button type="button" data-step="kids:-1" aria-label="Меньше детей">−</button><output name="kids">1</output><button type="button" data-step="kids:1" aria-label="Больше детей">+</button></div></div>
             <label class="field"><span>Длительность</span>
-              <select name="hours"><option value="2">2 часа</option><option value="3" selected>3 часа</option></select></label>
+              <select name="hours"><option value="2">2 часа</option><option value="3" selected>3 часа</option><option value="u">Безлимит</option></select></label>
             <label class="field"><span>Категория взрослых</span>
               <select name="cat"><option value="general">Общая</option><option value="lgot">Льготная</option></select></label>
+            <label class="field wide"><span>Карта лояльности</span>
+              <select name="loyal">
+                <option value="0">Нет карты</option>
+                <option value="5">1-й визит в этом месяце · −5%</option>
+                <option value="10">2-й визит · −10%</option>
+                <option value="15">3-й визит · −15%</option>
+                <option value="20">4-й и далее · −20%</option>
+              </select></label>
             <div class="field wide"><span>Дополнительно</span>
               <div class="checks">
                 <label class="check"><input type="checkbox" name="bday"> День рождения — сегодня, 2 дня до или после</label>
@@ -268,7 +288,7 @@
       </div>
     </div>
 
-    <div class="grid g3 rv" id="anim-row"></div>
+    <div class="anim-row rv" id="anim-row"></div>
     <div class="card groups rv" id="anim-groups"></div>
   </div>
 </section>
@@ -285,6 +305,7 @@
 
     <div class="incl rv" id="stay-incl"></div>
     <div class="homes rv" id="homes"></div>
+    <div class="stay-promos rv" id="stay-promos"></div>
 
     <div class="book rv" id="stay-book">
       <div class="book-side">
@@ -383,7 +404,7 @@
   </div>
 </footer>
 
-<script src="assets/data.js?v=1023d"></script>
-<script src="assets/app.js?v=1023d"></script>
+<script src="assets/data.js?v=1023e"></script>
+<script src="assets/app.js?v=1023e"></script>
 </body>
 </html>
